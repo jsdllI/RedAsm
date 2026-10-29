@@ -1,0 +1,75 @@
+# ============================================================================
+# rslatch.rasm — Trava RS (Set/Reset) de 1 bit
+# ============================================================================
+# Uma célula de memória RS armazena o último estado gravado em DUST0 (Q).
+#
+#   DUST1 = linha SET   (Q = 15)
+#   DUST2 = linha RESET (Q = 0)
+#   DUST0 = estado armazenado
+#
+# Política: RESET tem prioridade quando SET e RESET chegam juntos.
+#
+# O programa simula pulsos nas entradas e demonstra que Q continua estável
+# quando SET/RESET voltam a 0 — é isso que caracteriza a memória. Em hardware,
+# as linhas viriam de alavancas/botões externos; aqui o próprio script as
+# aciona em uma linha do tempo fixa e determinística.
+#
+# Execute:
+#   python redvm.py examples/rslatch.rasm --ticks 20
+# ============================================================================
+
+inicio:
+    POWER DUST0, 0          # Q começa em 0
+    POWER DUST1, 0
+    POWER DUST2, 0
+    TICKDELAY 1
+
+# --- Fase 1: pulso de SET -------------------------------------------------
+set_pulse:
+    POWER DUST1, 15         # levanta a linha SET
+    TICKDELAY 1
+    JZ DUST1, set_skip      # confirma que SET está alto
+    POWER DUST0, 15         # grava Q = 1
+    POWER DUST1, 0          # consome o pulso
+set_skip:
+    TICKDELAY 3             # Q deve permanecer em 15 com as entradas em 0
+
+# --- Fase 2: pulso de RESET -----------------------------------------------
+reset_pulse:
+    POWER DUST2, 15         # levanta a linha RESET
+    TICKDELAY 1
+    JZ DUST2, reset_skip
+    POWER DUST0, 0          # grava Q = 0
+    POWER DUST2, 0
+reset_skip:
+    TICKDELAY 3             # Q deve permanecer em 0
+
+# --- Fase 3: prepara Q = 1 para testar prioridade -------------------------
+preset:
+    POWER DUST1, 15
+    TICKDELAY 1
+    POWER DUST0, 15
+    POWER DUST1, 0
+    TICKDELAY 2
+
+# --- Fase 4: SET e RESET simultâneos => RESET vence ----------------------
+both:
+    POWER DUST1, 15
+    POWER DUST2, 15
+    TICKDELAY 1
+    JNZ DUST2, both_reset   # reset tem prioridade
+    JNZ DUST1, both_set     # (só ocorre se RESET estiver em 0)
+    JUMP fim
+
+both_reset:
+    POWER DUST0, 0
+    JUMP both_done
+both_set:
+    POWER DUST0, 15
+both_done:
+    POWER DUST1, 0
+    POWER DUST2, 0
+    TICKDELAY 3
+
+fim:
+    HALT

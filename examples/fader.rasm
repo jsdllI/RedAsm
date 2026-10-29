@@ -1,0 +1,29 @@
+# ============================================================================
+# fader.rasm — Fader PWM / envelope de intensidade
+# ============================================================================
+# Simula uma lâmpada que apaga suavemente. DUST0 é o canal principal e
+# DUST1 é um espelho (por exemplo, um segundo fio que alimenta um indicador).
+#
+# A cada tick o FADE reduz 1 unidade de potência (15 -> 14 -> ... -> 0),
+# reproduzindo a atenuação de sinal por distância no fio. Quando chega a 0,
+# o programa aguarda 2 ticks apagado e reinicia o ciclo.
+#
+# Em redstone real, variar a potência de 15 a 0 é a base de dimmers/PWM:
+# a média temporal da potência define o brilho percebido.
+#
+# Execute:
+#   python redvm.py examples/fader.rasm --ticks 40 --tick-rate 60
+# ============================================================================
+
+inicio:
+    POWER DUST0, 15         # acende no máximo
+    TICKDELAY 1
+
+fade_loop:
+    FADE DUST0              # perde 1 unidade de potência
+    WIRE DUST1, DUST0       # espelha o nível para o segundo fio
+    TICKDELAY 1             # um passo de fade por tick
+    JNZ DUST0, fade_loop    # enquanto houver carga, continua descendo
+
+    TICKDELAY 2             # pausa no apagado (DUST0 == 0)
+    JUMP inicio             # recomeça o ciclo (respiração contínua)

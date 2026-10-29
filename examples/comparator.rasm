@@ -1,0 +1,38 @@
+# ============================================================================
+# comparator.rasm — Processador de sinal analógico (exemplo extra)
+# ============================================================================
+# Demonstra as duas faces do comparador de redstone:
+#
+#   COMPARE  dest, main, side  -> main, se main >= side; senão 0
+#   SUBTRACT dest, main, side  -> max(0, main - side)
+#
+# Use DUST1 como sensor principal (A), DUST2 como sensor lateral (B) e DUST0
+# como atuador. COMPARATOR guarda o último resultado e exibe A/B no painel.
+# SUBTRACT escreve o excedente em DUST3 (A-B) e depois em DUST4 (B-A).
+#
+# Execute:
+#   python redvm.py examples/comparator.rasm --ticks 12
+# ============================================================================
+
+start:
+    # --- Cena 1: A = 12, B = 5 (A vence) ---------------------------------
+    POWER DUST1, 12
+    POWER DUST2, 5
+    COMPARE COMPARATOR, DUST1, DUST2   # 12 >= 5 -> COMPARATOR = 12
+    WIRE DUST0, COMPARATOR             # atuador recebe 12
+    SUBTRACT DUST3, DUST1, DUST2       # excedente = 7
+    TICKDELAY 3
+
+    # --- Cena 2: A = 4, B = 9 (B vence) ----------------------------------
+    POWER DUST1, 4
+    POWER DUST2, 9
+    COMPARE COMPARATOR, DUST1, DUST2   # 4 < 9 -> COMPARATOR = 0
+    WIRE DUST0, COMPARATOR             # atuador desliga
+    SUBTRACT DUST3, DUST1, DUST2       # max(0, 4-9) = 0
+    TICKDELAY 3
+
+    # --- Cena 3: quanto falta no lado B ---------------------------------
+    SUBTRACT DUST4, DUST2, DUST1       # 9 - 4 = 5
+    TICKDELAY 2
+
+    HALT

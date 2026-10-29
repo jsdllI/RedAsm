@@ -1,0 +1,22 @@
+# ============================================================================
+# clock.rasm — Gerador de clock (oscilador quadrado)
+# ============================================================================
+# Um dos circuitos mais básicos de redstone: alterna um sinal entre 15 e 0
+# indefinidamente. INVERT aplicado ao próprio DUST0 funciona como um toggle
+# porque o fio só assume 0 ou 15 neste programa:
+#
+#   0 -> INVERT -> 15 -> INVERT -> 0 -> ...
+#
+# TICKDELAY 2 mantém cada nível por 2 ticks, resultando em um período de 4
+# ticks (2 ligado, 2 desligado). A TORCH observa o fio e mostra o sinal
+# complementar (tocha de redstone inverte a entrada).
+#
+# Execute:
+#   python redvm.py examples/clock.rasm --ticks 16
+# ============================================================================
+
+loop:
+    INVERT DUST0, DUST0     # alterna o fio principal (0 <-> 15)
+    WIRE TORCH, DUST0       # a tocha lê DUST0 e inverte (aqui, 0 <-> 15)
+    TICKDELAY 2             # segura o nível por 2 ticks
+    JUMP loop               # repete para sempre

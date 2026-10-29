@@ -1,0 +1,13 @@
+POWER DUST0, 3
+CALL sum_down
+PRINT DUST2
+HALT
+
+sum_down:
+    JZ DUST0, done
+    PUSH DUST0
+    FADE DUST0
+    CALL sum_down
+    POP DUST1
+    ADD DUST2, DUST2, DUST1
+done: RET
