@@ -1,10 +1,10 @@
 # RedAsm — Redstone Assembly
 
-Linguagem assembly de 4 bits inspirada em redstone, agora com **38 instruções**,
+Linguagem assembly de 4 bits inspirada em redstone com 38 instruções,
 RAM, pilhas, sub-rotinas, operações aritméticas/bit a bit e portas de E/S.
 Python 3.11+; nenhuma dependência externa.
 
-Os sinais continuam entre **0 e 15**. Tochas invertem, repetidores atrasam
+Tochas invertem, repetidores atrasam
 um tick e comparadores comparam/subtraem.
 
 [Especificação completa](REDASM_SPEC.md)
