@@ -1,4 +1,4 @@
-# RedAsm 2.0 — Redstone Assembly
+# RedAsm — Redstone Assembly
 
 Linguagem assembly de 4 bits inspirada em redstone, agora com **38 instruções**,
 RAM, pilhas, sub-rotinas, operações aritméticas/bit a bit e portas de E/S.
