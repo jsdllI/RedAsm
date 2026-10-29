@@ -161,10 +161,6 @@ python -m unittest discover -s redasm/tests -v
 python -m unittest discover -s redengine/tests -v
 ```
 
-**103 testes do RedAsm + 27 do RedEngine**, com subcasos exaustivos sobre os
-valores de 4 bits. Cobertura dos circuitos antigos, parser, memória, pilhas,
-recursão, E/S, snapshots, stepping, erros e execução real da CLI.
-
 ## Limitações
 
 Sem strings, floats, números negativos, macros, includes, interrupções,
