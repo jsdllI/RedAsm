@@ -5,8 +5,7 @@ RAM, pilhas, sub-rotinas, operações aritméticas/bit a bit e portas de E/S.
 Python 3.11+; nenhuma dependência externa.
 
 Os sinais continuam entre **0 e 15**. Tochas invertem, repetidores atrasam
-um tick e comparadores comparam/subtraem. Os circuitos existentes e o
-[RedEngine 2D](../redengine/README.md) continuam funcionando.
+um tick e comparadores comparam/subtraem.
 
 [Especificação completa](REDASM_SPEC.md)
 
